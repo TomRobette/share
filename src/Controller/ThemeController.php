@@ -8,6 +8,7 @@ use App\Entity\Theme;
 use App\Form\AjoutThemeType;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repository\ThemeRepository;
+use App\Form\ModifThemeType;
 
 class ThemeController extends AbstractController
 {
@@ -43,6 +44,38 @@ class ThemeController extends AbstractController
         $themes = $repoTheme->findBy(array(), array('libelle'=>'ASC'));
         return $this->render('theme/liste_themes.html.twig', [            
             'themes'=>$themes
+        ]);
+    }
+
+    /**
+     * @Route("/modif_theme/{id}", name="modif_theme", requirements={"id"="\d+"})
+     */
+    public function modif_theme(int $id, Request $request)
+    {
+        $em = $this->getDoctrine();
+        $repoTheme = $em->getRepository(Theme::class);
+        $theme = $repoTheme->find($id);
+
+        if($theme==null){
+            $this->addFlash('notice','Cette page n\'existe pas');
+            return $this->redirectToRoute('liste_themes');   
+        }
+
+        $form = $this->createForm(ModifThemeType::class,$theme);
+
+        if ($request->isMethod('POST')) {            
+            $form->handleRequest($request);            
+            if ($form->isSubmitted() && $form->isValid()) {
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($theme);
+                $em->flush();
+                $this->addFlash('notice','Thème modifié');
+                return $this->redirectToRoute('liste_themes');        
+            }          
+        } 
+
+        return $this->render('theme/modif_theme.html.twig', [            
+            'form'=>$form->createView()        
         ]);
     }
 }

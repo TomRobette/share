@@ -13,7 +13,7 @@
         <div class="col-8 bg-white p-4 m-0 text-primary">                
             <ul class="list-group">
                 {% for theme in themes %}
-                <li class="list-group-item list-group-item-{{cycle(['secondary','light'], loop.index0)}}">{{theme.libelle|capitalize}}</li>
+                <li class="list-group-item list-group-item-{{cycle(['secondary','light'], loop.index0)}}">{{theme.libelle|capitalize}} <a href="{{path('modif_theme',{'id':theme.id})}}"><span class="material-icons text-dark" title="Modifier le thème">create</span></a></li>
                 {% endfor %}
             </ul>        
         </div>        
