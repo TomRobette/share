@@ -41,6 +41,16 @@ class ThemeController extends AbstractController
     {
         $em = $this->getDoctrine();
         $repoTheme = $em->getRepository(Theme::class);
+
+        if($request->get('supp')!=null){
+            $theme = $repoTheme->find($request->get('supp'));
+            if($theme!=null){
+                $em->getManager()->remove($theme);
+                $em->getManager()->flush();
+            }
+            $this->redirectToRoute('liste_themes');
+        }
+
         $themes = $repoTheme->findBy(array(), array('libelle'=>'ASC'));
         return $this->render('theme/liste_themes.html.twig', [            
             'themes'=>$themes
@@ -78,4 +88,6 @@ class ThemeController extends AbstractController
             'form'=>$form->createView()        
         ]);
     }
+
+    
 }
