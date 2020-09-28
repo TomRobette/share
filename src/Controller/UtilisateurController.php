@@ -41,8 +41,18 @@ class UtilisateurController extends AbstractController
     public function liste_utilisateurs(Request $request)
     {
         $em = $this->getDoctrine();
-        $repoTheme = $em->getRepository(Utilisateur::class);
-        $users = $repoTheme->findBy(array(), array('dateinscription'=>'ASC'));
+        $repoUser = $em->getRepository(Utilisateur::class);
+
+        if($request->get('supp')!=null){
+            $user = $repoUser->find($request->get('supp'));
+            if($user!=null){
+                $em->getManager()->remove($user);
+                $em->getManager()->flush();
+            }
+            $this->redirectToRoute('liste_utilisateurs');
+        }
+
+        $users = $repoUser->findBy(array(), array('dateinscription'=>'ASC'));
         return $this->render('utilisateur/liste_utilisateurs.html.twig', [            
             'users'=>$users
         ]);
