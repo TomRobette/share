@@ -67,11 +67,11 @@ class FichierController extends AbstractController
     {
         $em = $this->getDoctrine();
         $repoFichier = $em->getRepository(Fichier::class);
-        
+
         $fichier = new Fichier();
         $fichiers = $repoFichier->findBy(array(), array('nom'=>'ASC'));
         $file = $fichier->getNom();
-        $fichiers['vrai_nom'] = $file->getClientOriginalName();
+        //$fichiers['vrai_nom'] = $file->getClientOriginalName();
         return $this->render('fichier/liste_fichiers.html.twig', [            
             'fichiers'=>$fichiers
         ]);
