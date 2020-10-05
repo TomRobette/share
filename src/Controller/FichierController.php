@@ -69,6 +69,16 @@ class FichierController extends AbstractController
     {
         $em = $this->getDoctrine();
         $repoFichier = $em->getRepository(Fichier::class);
+        if($request->get('supp')!=null){
+            $fichier = $repoFichier->find($request->get('supp'));
+            unlink($this->getParameter('file_directory').'/'.$fichier->getNom());
+
+            if($fichier!=null){
+                $em->getManager()->remove($fichier);
+                $em->getManager()->flush();
+            }
+            $this->redirectToRoute('liste_fichiers');
+        }
 
         $fichiers = $repoFichier->findBy(array(), array('vrai_nom'=>'ASC'));
         return $this->render('fichier/liste_fichiers.html.twig', [            
@@ -88,7 +98,7 @@ class FichierController extends AbstractController
             return $this->redirectToRoute('liste_fichiers');
         }else{
             $file = new File($this->getParameter('file_directory').'/'.$fichier->getNom());
-            return $this->file($file, 'download_shared'.'.'.$fichier->getExtension());
+            return $this->file($file, $fichier->getVraiNom());
         }
     }
 }

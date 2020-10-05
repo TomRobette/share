@@ -13,7 +13,25 @@
         <div class="col-8 bg-white p-4 m-0 text-primary">                
             <ul class="list-group">
                 {% for fichier in fichiers %}
-                    <li class="list-group-item list-group-item-{{cycle(['secondary','light'], loop.index0)}}">{{fichier.nom}} {{fichier.taille}} o {{fichier.extension}} <b>{{fichier.utilisateur.prenom}} {{fichier.utilisateur.nom}} </b> <a href="{{path('telechargement_fichier',{'id':fichier.id})}}"><span class="material-icons text-dark" title="Télécharger le fihier">get_app</span></a></li>
+                    {% set unite = 'o' %}
+                    {% set taille = fichier.taille %}
+                    {% if taille > 1000 %}
+                        {% set unite = 'Ko' %}
+                        {% set taille = taille/1000 %}
+                    {% endif %}
+                    {% if taille > 1000 %}
+                        {% set unite = 'Mo' %}
+                        {% set taille = taille/1000 %}
+                    {% endif %}
+                    {% if taille > 1000 %}
+                        {% set unite = 'Go' %}
+                        {% set taille = taille/1000 %}
+                    {% endif %}
+                    {% if taille > 1000 %}
+                        {% set unite = 'To' %}
+                        {% set taille = taille/1000 %}
+                    {% endif %}
+                    <li class="list-group-item list-group-item-{{cycle(['secondary','light'], loop.index0)}}">{{fichier.vrainom}} {{taille|round(1, 'floor')}} {{unite}} {{fichier.extension}} <b>{{fichier.utilisateur.prenom}} {{fichier.utilisateur.nom}} </b> <a href="{{path('telechargement_fichier',{'id':fichier.id})}}"><span class="material-icons text-dark" title="Télécharger le fihier">get_app</span></a> <a href="{{path('liste_fichiers',{'supp':fichier.id})}}"><span class="material-icons text-dark" title="Supprimer le thème">delete</span></a></li>
                 {% endfor %}
             </ul>        
         </div>        

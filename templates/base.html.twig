@@ -30,7 +30,11 @@
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="" role="button" aria-haspopup="true" aria-expanded="false">Thèmes</a>
                 <div class="dropdown-menu">
-                  <a class="dropdown-item" href="{{ path('ajoutTheme')}}">Ajout d'un Thème</a>
+                  {% if app.session is not null %}
+                    {% if app.session.get('user')==1 %}
+                      <a class="dropdown-item" href="{{ path('ajoutTheme')}}">Ajout d'un Thème</a>
+                    {% endif %}
+                  {% endif %}    
                   <a class="dropdown-item" href="{{ path('liste_themes')}}">Liste des Thèmes</a>
                 </div>
               </li>

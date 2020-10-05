@@ -52,6 +52,16 @@ class UtilisateurController extends AbstractController
             $this->redirectToRoute('liste_utilisateurs');
         }
 
+        if($request->get('connect')!=null){
+            $user = $repoUser->find($request->get('connect'));
+            if($user!=null){
+                $session = new Session();
+                $session->start();
+                $session->set('user', $user);
+            }
+            $this->redirectToRoute('liste_utilisateurs');
+        }
+
         $users = $repoUser->findBy(array(), array('dateinscription'=>'ASC'));
         return $this->render('utilisateur/liste_utilisateurs.html.twig', [            
             'users'=>$users

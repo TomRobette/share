@@ -49,6 +49,11 @@ class Utilisateur
      */
     private $telechargements;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $role;
+
     public function __construct()
     {
         $this->fichiers = new ArrayCollection();
@@ -166,6 +171,18 @@ class Utilisateur
                 $telechargement->setUtilisateur(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getRole(): ?int
+    {
+        return $this->role;
+    }
+
+    public function setRole(int $role): self
+    {
+        $this->role = $role;
 
         return $this;
     }
