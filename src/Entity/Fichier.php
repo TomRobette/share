@@ -55,6 +55,9 @@ class Fichier
      */
     private $telechargements;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
     private $vrai_nom;
 
     public function __construct()
@@ -75,16 +78,9 @@ class Fichier
 
     public function setNom($nom)
     {
-        if($this->vrai_nom == null){
-            $this->vrai_nom = $this->nom;
-        }
         $this->nom = $nom;
 
         return $this;
-    }
-
-    public function setVrai_nom($vraiNom){
-        $this->vrai_nom = $vraiNom;
     }
 
     public function getExtension(): ?string
@@ -188,6 +184,18 @@ class Fichier
                 $telechargement->setFichier(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getVraiNom(): ?string
+    {
+        return $this->vrai_nom;
+    }
+
+    public function setVraiNom(string $vrai_nom): self
+    {
+        $this->vrai_nom = $vrai_nom;
 
         return $this;
     }

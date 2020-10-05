@@ -13,7 +13,7 @@
         <div class="col-8 bg-white p-4 m-0 text-primary">                
             <ul class="list-group">
                 {% for fichier in fichiers %}
-                    <li class="list-group-item list-group-item-{{cycle(['secondary','light'], loop.index0)}}">{{fichier.nom}}    {{fichier.taille}}    {{fichier.extension}}    <b>{{fichier.utilisateur.prenom}} {{fichier.utilisateur.nom}}</b> </li>
+                    <li class="list-group-item list-group-item-{{cycle(['secondary','light'], loop.index0)}}">{{fichier.nom}} {{fichier.taille}} o {{fichier.extension}} <b>{{fichier.utilisateur.prenom}} {{fichier.utilisateur.nom}} </b> <a href="{{path('telechargement_fichier',{'id':fichier.id})}}"><span class="material-icons text-dark" title="Télécharger le fihier">get_app</span></a></li>
                 {% endfor %}
             </ul>        
         </div>        

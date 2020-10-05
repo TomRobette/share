@@ -9,6 +9,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\File\File;
 use App\Entity\Fichier;
 
 class FichierController extends AbstractController
@@ -31,10 +32,11 @@ class FichierController extends AbstractController
                 $fichier->setDate(new \DateTime());
                 $fichier->setExtension($file->guessExtension()); //On récupère l'extension
                 $fichier->setTaille($file->getSize());
+                $fichier->setVraiNom($file->getClientOriginalName());
+                $fileName = $this->generateUniqueFileName().'.'.$file->guessExtension();
+                $fichier->setNom($fileName);
                 $em->persist($fichier);
                 $em->flush();
-                $fileName = $this->generateUniqueFileName().'.'.$file->guessExtension();
-
                 try{
                     $file->move($this->getParameter('file_directory'),$fileName);
 
@@ -68,12 +70,25 @@ class FichierController extends AbstractController
         $em = $this->getDoctrine();
         $repoFichier = $em->getRepository(Fichier::class);
 
-        $fichier = new Fichier();
-        $fichiers = $repoFichier->findBy(array(), array('nom'=>'ASC'));
-        $file = $fichier->getNom();
-        //$fichiers['vrai_nom'] = $file->getClientOriginalName();
+        $fichiers = $repoFichier->findBy(array(), array('vrai_nom'=>'ASC'));
         return $this->render('fichier/liste_fichiers.html.twig', [            
             'fichiers'=>$fichiers
         ]);
+    }
+
+    /**
+     * @Route("/telechargement_fichier/{id}", name="telechargement_fichier", requirements={"id"="\d+"})
+     */
+    public function telechargement_fichier(int $id)
+    {
+        $em = $this->getDoctrine();
+        $repoFichier = $em->getRepository(Fichier::class);
+        $fichier = $repoFichier->find($id);
+        if($fichier==null){
+            return $this->redirectToRoute('liste_fichiers');
+        }else{
+            $file = new File($this->getParameter('file_directory').'/'.$fichier->getNom());
+            return $this->file($file, 'download_shared'.'.'.$fichier->getExtension());
+        }
     }
 }
