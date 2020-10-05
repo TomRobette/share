@@ -55,6 +55,8 @@ class Fichier
      */
     private $telechargements;
 
+    private $vrai_nom;
+
     public function __construct()
     {
         $this->themes = new ArrayCollection();
@@ -66,16 +68,23 @@ class Fichier
         return $this->id;
     }
 
-    public function getNom(): ?string
+    public function getNom()
     {
         return $this->nom;
     }
 
-    public function setNom(string $nom): self
+    public function setNom($nom)
     {
+        if($this->vrai_nom == null){
+            $this->vrai_nom = $this->nom;
+        }
         $this->nom = $nom;
 
         return $this;
+    }
+
+    public function setVrai_nom($vraiNom){
+        $this->vrai_nom = $vraiNom;
     }
 
     public function getExtension(): ?string
