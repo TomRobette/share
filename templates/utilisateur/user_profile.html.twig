@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{parent()}}Modification Utilisateur{% endblock %}
+
+{% block content %}
+{{parent()}}
+<div class="container-fluid">           
+    <div class="row justify-content-center">            
+        <h1 class="text-center text-primary p-4">{{user.prenom|capitalize}} {{user.nom|upper}}</h1>        
+    </div>        
+    {% if user.photo|trim is not empty %}
+        <img src="uploads/photos_profil/{{user.photo}}" alt="..." class="img-thumbnail">
+        <h1>BRUH</h1>
+    {% endif %}    
+    <div class="row justify-content-center">            
+        <div class="col-8 bg-white p-4 m-0 text-primary">                
+            {{form_start(form)}}
+                <div class="form-group">                    
+                    {{ form_label(form.nom, 'Nom ', {'label_attr': {'class': 'font-weight-bold'}}) }}                    
+                    {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}                
+                </div>   
+                <div class="form-group">                    
+                    {{ form_label(form.prenom, 'Prenom ', {'label_attr': {'class': 'font-weight-bold'}}) }}                    
+                    {{ form_widget(form.prenom, {'attr': {'class': 'form-control'}}) }}                
+                </div>   
+                <div class="form-group">                    
+                    {{ form_label(form.datenaissance, 'Date de naissance ', {'label_attr': {'class': 'font-weight-bold'}}) }}                    
+                    {{ form_widget(form.datenaissance) }}                
+                </div>     
+                <div class="form-group">                    
+                    {{ form_label(form.dateinscription, 'Date d\'inscription ', {'label_attr': {'class': 'font-weight-bold'}}) }}                    
+                    {{ form_widget(form.dateinscription) }}                
+                </div>   
+
+                <div class="form-group">                    
+                    {{ form_label(form.photo, 'Image de profil ', {'label_attr': {'class': 'font-weight-bold'}}) }}                    
+                    {{ form_widget(form.photo, {'attr': {'class': 'form-control'}}) }}                
+                </div>          
+
+                <div class="form-group mx-auto text-center">                    
+                    {{ form_widget(form.send, { 'label': "Modifier", 'attr': {'class': 'btn font-weight-bold bg-primary text-white mx-auto text-center'}}) }}                
+                </div>                  
+            {{form_end(form)}}                
+        </div>        
+    </div>
+</div>
+{% endblock %}
+{% block javascripts %}{{parent()}}{% endblock %}

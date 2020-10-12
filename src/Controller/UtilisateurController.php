@@ -8,6 +8,9 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Form\AjoutUtilisateurType;
 use App\Form\ModifUtilisateurType;
 use App\Entity\Utilisateur;
+use App\Form\ProfilUtilisateurType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class UtilisateurController extends AbstractController
 {
@@ -97,6 +100,50 @@ class UtilisateurController extends AbstractController
 
         return $this->render('utilisateur/modif_utilisateur.html.twig', [            
             'form'=>$form->createView()        
+        ]);
+    }
+
+    /**
+     * @Route("/user_profile/{id}", name="user_profile", requirements={"id"="\d+"})
+     */
+    public function user_profile(int $id, Request $request)
+    {
+        $em = $this->getDoctrine();
+        $repoUser = $em->getRepository(Utilisateur::class);
+        $user = $repoUser->find($id);
+        $form = $this->createFormBuilder($user)
+        ->add('photo', FileType::class, array('label' => 'Fichier à télécharger'))
+        ->add('send', SubmitType::class, array('label' => 'Modifier'))->getForm();
+
+        if($user==null){
+            $this->addFlash('notice','Cette page n\'existe pas');
+            return $this->redirectToRoute('liste_utilisateurs');   
+        }
+
+        $form = $this->createForm(ProfilUtilisateurType::class, $user); 
+        if ($request->isMethod('POST')) {            
+            $form->handleRequest($request);            
+            if ($form->isSubmitted() && $form->isValid()) {
+                $em = $this->getDoctrine()->getManager();
+                $file = $user->getPhoto();
+                $fileName = $user->getPrenom().$user->getNom().'.'.$file->guessExtension();
+                $em->persist($user);
+                $em->flush();
+
+                try{
+                    $file->move($this->getParameter('file_directory').'/photos_profil',$fileName);
+
+                }catch(FileException $e){
+                    $this->addFlash('notice','Erreur lors de l\'insertion du fichier');
+                }
+
+                $this->addFlash('notice','Utilisateur modifié');
+                return $this->redirectToRoute('user_profile');        
+            }          
+        }        
+        return $this->render('utilisateur/user_profile.html.twig', [            
+            'form'=>$form->createView(),          
+            'user'=>$user   
         ]);
     }
 }

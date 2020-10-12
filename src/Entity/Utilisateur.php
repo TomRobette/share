@@ -54,6 +54,16 @@ class Utilisateur
      */
     private $role;
 
+    /**
+     * @ORM\OneToOne(targetEntity=Fichier::class, cascade={"persist", "remove"})
+     */
+    private $idPhoto;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $photo;
+
     public function __construct()
     {
         $this->fichiers = new ArrayCollection();
@@ -65,12 +75,12 @@ class Utilisateur
         return $this->id;
     }
 
-    public function getNom(): ?string
+    public function getNom()
     {
         return $this->nom;
     }
 
-    public function setNom(string $nom): self
+    public function setNom($nom)
     {
         $this->nom = $nom;
 
@@ -183,6 +193,30 @@ class Utilisateur
     public function setRole(int $role): self
     {
         $this->role = $role;
+
+        return $this;
+    }
+
+    public function getIdPhoto(): ?Fichier
+    {
+        return $this->idPhoto;
+    }
+
+    public function setIdPhoto(?Fichier $idPhoto): self
+    {
+        $this->idPhoto = $idPhoto;
+
+        return $this;
+    }
+
+    public function getPhoto()
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto($photo)
+    {
+        $this->photo = $photo;
 
         return $this;
     }
