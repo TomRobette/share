@@ -11,6 +11,8 @@ use App\Entity\Utilisateur;
 use App\Form\ProfilUtilisateurType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\File\File;
+use App\Entity\Fichier;
 
 class UtilisateurController extends AbstractController
 {
@@ -111,39 +113,53 @@ class UtilisateurController extends AbstractController
         $em = $this->getDoctrine();
         $repoUser = $em->getRepository(Utilisateur::class);
         $user = $repoUser->find($id);
-        $form = $this->createFormBuilder($user)
-        ->add('photo', FileType::class, array('label' => 'Fichier à télécharger'))
-        ->add('send', SubmitType::class, array('label' => 'Modifier'))->getForm();
 
         if($user==null){
             $this->addFlash('notice','Cette page n\'existe pas');
             return $this->redirectToRoute('liste_utilisateurs');   
         }
 
-        $form = $this->createForm(ProfilUtilisateurType::class, $user); 
+        $form = $this->createForm(ProfilUtilisateurType::class); 
+
+        $nomFichier = 'default.png';
+        if($user->getPhoto() != null){
+            $nomFichier = $user->getPhoto();
+        }
+
+        
+        $path = $this->getParameter('profile_directory').'/'.$nomFichier;
+        $fichierPhoto = new Fichier($path);
+        $ext = $fichierPhoto->getNom()->guessExtension();
+        $data = file_get_contents($path);
+        $base64 = 'data:image/'.$ext.';base64'.base64_encode($data);
+        die("AHHH".$ext);
+
         if ($request->isMethod('POST')) {            
             $form->handleRequest($request);            
             if ($form->isSubmitted() && $form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
-                $file = $user->getPhoto();
+                $file = $form->get('photo')->getData();
                 $fileName = $user->getPrenom().$user->getNom().'.'.$file->guessExtension();
+                $user->setPhoto($fileName);
                 $em->persist($user);
                 $em->flush();
 
                 try{
-                    $file->move($this->getParameter('file_directory').'/photos_profil',$fileName);
+                    $file->move($this->getParameter('profile_directory'),$fileName);
 
                 }catch(FileException $e){
                     $this->addFlash('notice','Erreur lors de l\'insertion du fichier');
                 }
 
                 $this->addFlash('notice','Utilisateur modifié');
-                return $this->redirectToRoute('user_profile');        
+                //return $this->redirectToRoute('user_profile');
+                return $this->redirectToRoute('liste_utilisateurs');        
             }          
-        }        
+        }     
         return $this->render('utilisateur/user_profile.html.twig', [            
             'form'=>$form->createView(),          
-            'user'=>$user   
+            'user'=>$user,
+            'base64'=>$base64
         ]);
     }
 }

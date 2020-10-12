@@ -38,7 +38,7 @@ class FichierController extends AbstractController
                 $em->persist($fichier);
                 $em->flush();
                 try{
-                    $file->move($this->getParameter('file_directory').'/fichiers',$fileName);
+                    $file->move($this->getParameter('file_directory'),$fileName);
 
                 }catch(FileException $e){
                     $this->addFlash('notice','Erreur lors de l\'insertion du fichier');
@@ -71,7 +71,7 @@ class FichierController extends AbstractController
         $repoFichier = $em->getRepository(Fichier::class);
         if($request->get('supp')!=null){
             $fichier = $repoFichier->find($request->get('supp'));
-            unlink($this->getParameter('file_directory').'/fichiers'.'/'.$fichier->getNom());
+            unlink($this->getParameter('file_directory').'/'.$fichier->getNom());
 
             if($fichier!=null){
                 $em->getManager()->remove($fichier);
@@ -97,7 +97,7 @@ class FichierController extends AbstractController
         if($fichier==null){
             return $this->redirectToRoute('liste_fichiers');
         }else{
-            $file = new File($this->getParameter('file_directory').'/fichiers'.'/'.$fichier->getNom());
+            $file = new File($this->getParameter('file_directory').'/'.$fichier->getNom());
             return $this->file($file, $fichier->getVraiNom());
         }
     }
