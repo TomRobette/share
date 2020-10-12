@@ -139,7 +139,7 @@ class UtilisateurController extends AbstractController
             if ($form->isSubmitted() && $form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
                 $file = $form->get('photo')->getData();
-                $fileName = $user->getPrenom().$user->getNom().'.'.$file->guessExtension();
+                $fileName = $user->getId().$user->getPrenom().$user->getNom().'.'.$file->guessExtension();
                 $user->setPhoto($fileName);
                 $em->persist($user);
                 $em->flush();
