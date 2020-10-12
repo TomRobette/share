@@ -132,7 +132,6 @@ class UtilisateurController extends AbstractController
         $ext = $fichierPhoto->getNom()->guessExtension();
         $data = file_get_contents($path);
         $base64 = 'data:image/'.$ext.';base64'.base64_encode($data);
-        die("AHHH".$ext);
 
         if ($request->isMethod('POST')) {            
             $form->handleRequest($request);            
