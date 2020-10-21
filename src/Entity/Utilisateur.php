@@ -55,11 +55,6 @@ class Utilisateur
     private $role;
 
     /**
-     * @ORM\OneToOne(targetEntity=Fichier::class, cascade={"persist", "remove"})
-     */
-    private $idPhoto;
-
-    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $photo;
@@ -193,18 +188,6 @@ class Utilisateur
     public function setRole(int $role): self
     {
         $this->role = $role;
-
-        return $this;
-    }
-
-    public function getIdPhoto(): ?Fichier
-    {
-        return $this->idPhoto;
-    }
-
-    public function setIdPhoto(?Fichier $idPhoto): self
-    {
-        $this->idPhoto = $idPhoto;
 
         return $this;
     }

@@ -9,6 +9,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 
 class AjoutUtilisateurType extends AbstractType
 {
@@ -20,7 +21,8 @@ class AjoutUtilisateurType extends AbstractType
             ->add('datenaissance', DateType::class, [
                 'years' => range(date('Y')-1500, date('Y')),
             ])
-            ->add('dateinscription', DateType::class)      
+            ->add('dateinscription', DateType::class)    
+            ->add('role', IntegerType::class)    
             ->add('send', SubmitType::class)
         ;
     }

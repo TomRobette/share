@@ -116,35 +116,23 @@ class UtilisateurController extends AbstractController
 
         if($user==null){
             $this->addFlash('notice','Cette page n\'existe pas');
-            return $this->redirectToRoute('liste_utilisateurs');   
+            return $this->redirectToRoute('accueil');   
         }
 
         $form = $this->createForm(ProfilUtilisateurType::class); 
 
-        $nomFichier = 'default.png';
-        if($user->getPhoto() != null){
-            $nomFichier = $user->getPhoto();
-        }
-
-        
-        $path = $this->getParameter('profile_directory').'/'.$nomFichier;
-        $fichierPhoto = new Fichier($path);
-        $ext = $fichierPhoto->getNom()->guessExtension();
-        $data = file_get_contents($path);
-        $base64 = 'data:image/'.$ext.';base64'.base64_encode($data);
-
         if ($request->isMethod('POST')) {            
             $form->handleRequest($request);            
             if ($form->isSubmitted() && $form->isValid()) {
-                $em = $this->getDoctrine()->getManager();
                 $file = $form->get('photo')->getData();
-                $fileName = $user->getId().$user->getPrenom().$user->getNom().'.'.$file->guessExtension();
-                $user->setPhoto($fileName);
-                $em->persist($user);
-                $em->flush();
 
                 try{
+                    $fileName = $user->getId().$user->getPrenom().$user->getNom().'.'.$file->guessExtension();
                     $file->move($this->getParameter('profile_directory'),$fileName);
+                    $em = $em->getManager();
+                    $user->setPhoto($fileName);
+                    $em->persist($user);
+                    $em->flush();
 
                 }catch(FileException $e){
                     $this->addFlash('notice','Erreur lors de l\'insertion du fichier');
@@ -154,7 +142,16 @@ class UtilisateurController extends AbstractController
                 //return $this->redirectToRoute('user_profile');
                 return $this->redirectToRoute('liste_utilisateurs');        
             }          
-        }     
+        }
+
+        if($user->getPhoto()==null){
+            $path = $this->getParameter('profile_directory').'/default.png';
+        }else{
+            $path = $this->getParameter('profile_directory').'/'.$user->getPhoto();
+        }
+        $data = file_get_contents($path);
+        $base64 = 'data:image/png;base64,'.base64_encode($data);
+
         return $this->render('utilisateur/user_profile.html.twig', [            
             'form'=>$form->createView(),          
             'user'=>$user,
