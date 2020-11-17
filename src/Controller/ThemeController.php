@@ -17,6 +17,7 @@ class ThemeController extends AbstractController
      */
     public function ajoutTheme(Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $theme = new Theme();
         $form = $this->createForm(AjoutThemeType::class, $theme); 
         if ($request->isMethod('POST')) {            
@@ -39,6 +40,7 @@ class ThemeController extends AbstractController
      */
     public function liste_themes(Request $request)
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $em = $this->getDoctrine();
         $repoTheme = $em->getRepository(Theme::class);
 
@@ -62,6 +64,7 @@ class ThemeController extends AbstractController
      */
     public function modif_theme(int $id, Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $em = $this->getDoctrine();
         $repoTheme = $em->getRepository(Theme::class);
         $theme = $repoTheme->find($id);

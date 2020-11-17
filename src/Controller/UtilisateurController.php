@@ -21,6 +21,7 @@ class UtilisateurController extends AbstractController
      */
     public function ajout_utilisateur(Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $user = new Utilisateur();
         $user-> setDateinscription(new \DateTime());
 
@@ -45,6 +46,7 @@ class UtilisateurController extends AbstractController
      */
     public function liste_utilisateurs(Request $request)
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $em = $this->getDoctrine();
         $repoUser = $em->getRepository(Utilisateur::class);
 
@@ -78,6 +80,7 @@ class UtilisateurController extends AbstractController
      */
     public function modif_utilisateur(int $id, Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $em = $this->getDoctrine();
         $repoUser = $em->getRepository(Utilisateur::class);
         $user = $repoUser->find($id);

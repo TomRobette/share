@@ -19,6 +19,7 @@ class FichierController extends AbstractController
      */
     public function ajout_fichier(Request $request)
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $fichier = new Fichier();
         $form = $this->createFormBuilder($fichier)
         ->add('utilisateur', EntityType::class, array('class' => 'App\Entity\Utilisateur', 'choice_label' => 'nom'))
@@ -67,6 +68,7 @@ class FichierController extends AbstractController
      */
     public function liste_fichiers(Request $request)
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $em = $this->getDoctrine();
         $repoFichier = $em->getRepository(Fichier::class);
         if($request->get('supp')!=null){

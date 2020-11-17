@@ -1,16 +1,30 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{parent()}}Accueil{% endblock %}
-
-{% block body %}
-{{parent()}}
-<a>Accueil</a>
-<button type="button" class="btn btn-outline-primary">Primary</button>
-<button type="button" class="btn btn-outline-secondary">Secondary</button>
-<button type="button" class="btn btn-outline-success">Success</button>
-<button type="button" class="btn btn-outline-info">Info</button>
-<button type="button" class="btn btn-outline-warning">Warning</button>
-<button type="button" class="btn btn-outline-danger">Danger</button>
+{% block title %}
+	{{parent()}}Accueil
 {% endblock %}
 
-{% block javascripts %}{{parent()}}{% endblock %}
+{% block body %}
+	{{parent()}}
+	{% if is_granted('ROLE_ADMIN') %}
+		<div class="row justify-content-center">
+			<h1 class="text-center text-primary p-4">Vous êtes connecté en tant que
+				{{ app.user.username }}
+				(Admin)</h1>
+		</div>
+	{% else %}
+		{% if is_granted('ROLE_USER') %}
+			<p></p>
+			<div class="row justify-content-center">
+				<h1 class="text-center text-primary p-4">Vous êtes connecté en tant que
+					{{ app.user.username }}
+					(Utilisateur)</h1>
+			</div>
+		{% endif %}
+	{% endif %}
+
+{% endblock %}
+
+{% block javascripts %}
+	{{parent()}}
+{% endblock %}
