@@ -63,15 +63,21 @@
 							</div>
 						</li>
 						{% if not is_granted('IS_AUTHENTICATED_FULLY') %}
-							<li class="nav-item">
-								<a class="nav-link text-info" href="{{ path('inscrire') }}">S'inscrire</a>
+							<li class="nav-item active">
+								<a class="nav-link text-info" href="{{ path('inscrire')}}">
+									S'inscrire
+								</a>
 							</li>
-							<li class="nav-item">
-								<a class="nav-link text-info" href="{{ path('app_login') }}">Se connecter</a>
+							<li class="nav-item active">
+								<a class="nav-link text-info" href="{{ path('app_login')}}">
+									Se connecter
+								</a>
 							</li>
 						{% else %}
-							<li class="nav-item">
-								<a class="nav-link text-info" href="{{ path('app_logout') }}">Se déconnecter</a>
+							<li class="nav-item active">
+								<a class="nav-link text-info" href="{{ path('app_logout')}}">
+									Se déconnecter
+								</a>
 							</li>
 						{% endif %}
 					</ul>
